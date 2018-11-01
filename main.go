@@ -16,7 +16,7 @@ func main() {
 	listenAddress := flag.String("listen", ":80", "what address and port to listen on (ex.: localhost:8080 or just :8080)")
 	flag.Parse()
 	log.Println("Starting the app...")
-	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/", RootHandler)
 
 	Server := http.Server{Addr: *listenAddress}
 
@@ -40,8 +40,7 @@ func main() {
 	}
 }
 
-func rootHandler(w http.ResponseWriter, r *http.Request) {
-	// a bit lazy ipv6 regexp, but it should work well, since chances of getting unreal ipv6 values are 0
+func RootHandler(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`((?:\d{1,3}.){3}\d{1,3}):\d+|\[(.+)\]:\d+`)
 	for _, ip := range re.FindStringSubmatch(r.RemoteAddr)[1:] {
 		if ip != "" {
