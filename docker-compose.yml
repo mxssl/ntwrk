@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  ntwrk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ntwrk:latest
+    ports:
+      - "80:80"
