@@ -4,25 +4,43 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"regexp"
 	"syscall"
+
+	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
 )
 
+func init() {
+	// Configure logger
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+
+	// Load config from .env
+	if err := godotenv.Load(); err != nil {
+		log.Println("Connot load .env file, env variables will be used")
+	}
+}
+
 func main() {
-	listenAddress := flag.String("listen", ":80", "what address and port to listen on (ex.: localhost:8080 or just :8080)")
 	flag.Parse()
 	log.Println("Starting the app...")
-	http.HandleFunc("/", RootHandler)
+	http.HandleFunc("/", rootHandler)
 
-	Server := http.Server{Addr: *listenAddress}
+	port := fmt.Sprintf(":" + os.Getenv("PORT"))
+
+	Server := http.Server{Addr: port}
 
 	go func() {
 		log.Fatal(Server.ListenAndServe())
 	}()
+
+	log.WithFields(log.Fields{
+		"addr": Server.Addr,
+	}).Info("App started")
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -34,18 +52,17 @@ func main() {
 			log.Fatalf("Cannot gracefully shut down the server: %v", err)
 		}
 	case syscall.SIGTERM:
-		// abruptly shutting down if we got killed
 		log.Println("Killed")
 		return
 	}
 }
 
-func RootHandler(w http.ResponseWriter, r *http.Request) {
+func rootHandler(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`((?:\d{1,3}.){3}\d{1,3}):\d+|\[(.+)\]:\d+`)
 	for _, ip := range re.FindStringSubmatch(r.RemoteAddr)[1:] {
 		if ip != "" {
 			fmt.Fprintf(w, ip+"\n")
-			log.Printf("Received ip request from: %s\n", ip)
+			log.Printf("Received ip request from: %s", ip)
 		}
 	}
 }

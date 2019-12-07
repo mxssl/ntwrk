@@ -16,7 +16,7 @@ func TestRootHandler(t *testing.T) {
 		r := httptest.NewRequest("GET", "/", nil)
 		r.RemoteAddr = remaddr
 		w := httptest.NewRecorder()
-		RootHandler(w, r)
+		rootHandler(w, r)
 		resp := w.Result()
 		body, _ := ioutil.ReadAll(resp.Body)
 		respIP := strings.TrimSuffix(string(body), "\n")
