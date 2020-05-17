@@ -26,7 +26,7 @@ version: '2'
 
 services:
   ntwrk:
-    image: mxssl/ntwrk:0.0.1
+    image: mxssl/ntwrk:0.0.2
     env_file: .env
     restart: always
     network_mode: host

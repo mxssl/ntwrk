@@ -1,4 +1,4 @@
-FROM golang:1.13.4-alpine3.10 as builder
+FROM golang:1.14.3-alpine3.11 as builder
 
 ENV GO111MODULE=on
 
@@ -18,7 +18,7 @@ RUN CGO_ENABLED=0 \
   go build -v -mod=vendor -o ntwrk
 
 # Copy compiled binary to clear Alpine Linux image
-FROM alpine:3.10.3
+FROM alpine:3.11.6
 WORKDIR /
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/src/github.com/mxssl/ntwrk/ntwrk /ntwrk
