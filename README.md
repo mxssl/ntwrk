@@ -1,7 +1,7 @@
 # ntwrk
 
 Simple web app that you can use to check your external IP address.
-Hosted on http://ntwrk.duckdns.org
+Hosted on http://sre.monster
 
 Usage:
 
