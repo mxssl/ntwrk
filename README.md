@@ -1,12 +1,12 @@
 # ntwrk
 
 Simple web app that you can use to check your external IP address.
-Hosted on http://sre.monster
+Hosted on [http://sre.monster](http://sre.monster)
 
 Usage:
 
 ```sh
-curl ntwrk.duckdns.org
+curl sre.monster
 ```
 
 ## Install
@@ -26,7 +26,7 @@ version: '2'
 
 services:
   ntwrk:
-    image: mxssl/ntwrk:0.0.4
+    image: mxssl/ntwrk:0.0.5
     env_file: .env
     restart: always
     network_mode: host
