@@ -58,11 +58,18 @@ func main() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	re := regexp.MustCompile(`((?:\d{1,3}.){3}\d{1,3}):\d+|\[(.+)\]:\d+`)
-	for _, ip := range re.FindStringSubmatch(r.RemoteAddr)[1:] {
-		if ip != "" {
-			fmt.Fprintf(w, ip+"\n")
-			log.Printf("Received ip request from: %s", ip)
+	if os.Getenv("MODE") == "native" {
+		re := regexp.MustCompile(`((?:\d{1,3}.){3}\d{1,3}):\d+|\[(.+)\]:\d+`)
+		for _, ip := range re.FindStringSubmatch(r.RemoteAddr)[1:] {
+			if ip != "" {
+				fmt.Fprintf(w, ip+"\n")
+				log.Printf("Received ip request from: %s", ip)
+			}
 		}
+	}
+	if os.Getenv("MODE") == "cloudflare" {
+		ip := r.Header.Get("CF-Connecting-IP")
+		fmt.Fprintf(w, ip+"\n")
+		log.Printf("Received ip request from: %s", ip)
 	}
 }
