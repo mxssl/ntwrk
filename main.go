@@ -14,6 +14,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var (
+	re   *regexp.Regexp
+	mode string
+	port string
+)
+
+const (
+	modeNative     = "native"
+	modeCloudflare = "cloudflare"
+)
+
 func init() {
 	// Configure logger
 	log.SetFormatter(&log.JSONFormatter{})
@@ -23,14 +34,22 @@ func init() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Connot load .env file, env variables will be used")
 	}
+
+	// Assign env variables
+	mode = os.Getenv("MODE")
+	port = os.Getenv("PORT")
+
+	// Compile regular expression
+	re = regexp.MustCompile(`((?:\d{1,3}.){3}\d{1,3}):\d+|\[(.+)\]:\d+`)
 }
 
 func main() {
 	flag.Parse()
 	log.Println("Starting the app...")
+
 	http.HandleFunc("/", rootHandler)
 
-	port := fmt.Sprintf(":" + os.Getenv("PORT"))
+	port := fmt.Sprintf(":" + port)
 
 	Server := http.Server{Addr: port}
 
@@ -58,8 +77,7 @@ func main() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	if os.Getenv("MODE") == "native" {
-		re := regexp.MustCompile(`((?:\d{1,3}.){3}\d{1,3}):\d+|\[(.+)\]:\d+`)
+	if mode == modeNative {
 		for _, ip := range re.FindStringSubmatch(r.RemoteAddr)[1:] {
 			if ip != "" {
 				fmt.Fprintf(w, ip+"\n")
@@ -67,7 +85,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if os.Getenv("MODE") == "cloudflare" {
+	if mode == modeCloudflare {
 		ip := r.Header.Get("CF-Connecting-IP")
 		fmt.Fprintf(w, ip+"\n")
 		log.Printf("Received ip request from: %s", ip)
