@@ -1,5 +1,7 @@
 # ntwrk
 
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/mxssl/ntwrk)
+
 Simple web app that you can use to check your external IP address.
 Hosted on [http://sre.monster](http://sre.monster)
 
