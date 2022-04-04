@@ -3,7 +3,7 @@ module github.com/mxssl/ntwrk
 go 1.13
 
 require (
-	github.com/joho/godotenv v1.3.0
-	github.com/sirupsen/logrus v1.7.0
-	golang.org/x/sys v0.0.0-20201024232916-9f70ab9862d5 // indirect
+	github.com/joho/godotenv v1.4.0
+	github.com/sirupsen/logrus v1.8.1
+	golang.org/x/sys v0.0.0-20220403205710-6acee93ad0eb // indirect
 )
