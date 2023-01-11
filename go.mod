@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/joho/godotenv v1.4.0
-	github.com/sirupsen/logrus v1.8.1
-	golang.org/x/sys v0.0.0-20220403205710-6acee93ad0eb // indirect
+	github.com/sirupsen/logrus v1.9.0
 )
+
+require golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
