@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -18,7 +18,7 @@ func TestRootHandler(t *testing.T) {
 		w := httptest.NewRecorder()
 		rootHandler(w, r)
 		resp := w.Result()
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body)
 		respIP := strings.TrimSuffix(string(body), "\n")
 		if respIP != ip {
 			t.Errorf("expected \"%v\" got \"%v\"", ip, string(body))

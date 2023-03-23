@@ -33,7 +33,7 @@ version: '2.4'
 
 services:
   ntwrk:
-    image: mxssl/ntwrk:0.1.3
+    image: mxssl/ntwrk:0.1.4
     env_file: .env
     restart: always
     # for native mode you need to use host network mode
@@ -43,7 +43,7 @@ services:
 Pull and start the app container:
 
 ```sh
-docker-compose pull
-docker-compose up -d
-docker-compose logs
+docker compose pull
+docker compose up -d
+docker compose logs
 ```
