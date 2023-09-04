@@ -9,7 +9,7 @@ jobs:
       image: golangci/golangci-lint:v1.20-alpine
       options: -w /go/src/github.com/mxssl/ntwrk
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: apk add --no-cache make
       - name: Lint
