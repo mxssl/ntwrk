@@ -1,9 +1,6 @@
 # ntwrk
 
-![Docker Image Version (latest semver)](https://img.shields.io/docker/v/mxssl/ntwrk)
-
-Simple web app that you can use to check your external IP address.
-Hosted on [http://sre.monster](http://sre.monster)
+This is a simple app that you can use to check your external IP address. Hosted on [http://sre.monster](http://sre.monster)
 
 Usage:
 
@@ -13,34 +10,32 @@ curl sre.monster
 
 ## Install
 
-If you want to run your own instance of the app.
-
-Create `.env` file with the following content:
+If you want to run your own instance of the app, create a `.env` file with the following content:
 
 ```sh
-# app starts on this port
+# The app starts on this port
 PORT=80
-# mode can be "native" or "cloudflare"
-# if you use cloudflare mode then the app answers with a value of HTTP header "CF-Connecting-IP"
-# https://support.cloudflare.com/hc/en-us/articles/200170986-How-does-Cloudflare-handle-HTTP-Request-headers-
+# The mode can be set to either "native" or "cloudflare"
+# If you use "cloudflare" mode, then the app responds with the value of the HTTP header "CF-Connecting-IP"
+# https://developers.cloudflare.com/fundamentals/reference/http-request-headers/#cf-connecting-ip
 MODE=native
 ```
 
 Create `docker-compose.yml` file:
 
 ```yaml
-version: '2.4'
+version: '3'
 
 services:
   ntwrk:
     image: mxssl/ntwrk:0.1.7
     env_file: .env
     restart: always
-    # for native mode you need to use host network mode
+    # For "native" mode, you need to use the host network mode
     network_mode: host
 ```
 
-Pull and start the app container:
+Pull and start the container:
 
 ```sh
 docker compose pull

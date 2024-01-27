@@ -6,7 +6,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container: 
-      image: golangci/golangci-lint:v1.20-alpine
+      image: golangci/golangci-lint:v1.21-alpine
       options: -w /go/src/github.com/mxssl/ntwrk
     steps:
       - uses: actions/checkout@v4
