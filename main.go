@@ -11,7 +11,7 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 var (
@@ -27,7 +27,7 @@ const (
 
 func main() {
 	// Configure logger
-	logger := slog.New(slog.NewTextHandler(os.Stdout))
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
 	// Load config from .env
