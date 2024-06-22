@@ -4,8 +4,16 @@ This is a simple app that you can use to check your external IP address. Hosted 
 
 Usage:
 
+IPv4:
+
 ```sh
-curl sre.monster
+curl -4 sre.monster
+```
+
+IPv6:
+
+```sh
+curl -6 sre.monster
 ```
 
 ## Install
