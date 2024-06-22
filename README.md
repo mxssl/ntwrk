@@ -36,7 +36,7 @@ version: '3'
 
 services:
   ntwrk:
-    image: mxssl/ntwrk:0.1.7
+    image: mxssl/ntwrk:0.1.10
     env_file: .env
     restart: always
     # For "native" mode, you need to use the host network mode
