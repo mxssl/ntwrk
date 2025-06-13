@@ -88,7 +88,10 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	if mode == modeNative {
 		for _, ip := range re.FindStringSubmatch(r.RemoteAddr)[1:] {
 			if ip != "" {
-				fmt.Fprintf(w, "%s\n", ip)
+				if _, err := fmt.Fprintf(w, "%s\n", ip); err != nil {
+					slog.Error("failed to write response", "error", err)
+					return
+				}
 				slog.Info(
 					"request",
 					slog.String("source", ip),
@@ -98,7 +101,10 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if mode == modeCloudflare {
 		ip := r.Header.Get("CF-Connecting-IP")
-		fmt.Fprintf(w, "%s\n", ip)
+		if _, err := fmt.Fprintf(w, "%s\n", ip); err != nil {
+			slog.Error("failed to write response", "error", err)
+			return
+		}
 		slog.Info(
 			"request",
 			"ip", ip,
