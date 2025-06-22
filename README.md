@@ -32,7 +32,7 @@ MODE=native
 Create `docker-compose.yml` file:
 
 ```yaml
-version: '3'
+version: "3"
 
 services:
   ntwrk:
