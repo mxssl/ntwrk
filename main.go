@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
+	"strings"
 	"syscall"
 
 	"github.com/joho/godotenv"
@@ -23,6 +24,7 @@ var (
 const (
 	modeNative     = "native"
 	modeCloudflare = "cloudflare"
+	modeProxy      = "proxy"
 )
 
 func main() {
@@ -101,6 +103,21 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if mode == modeCloudflare {
 		ip := r.Header.Get("CF-Connecting-IP")
+		if _, err := fmt.Fprintf(w, "%s\n", ip); err != nil {
+			slog.Error("failed to write response", "error", err)
+			return
+		}
+		slog.Info(
+			"request",
+			"ip", ip,
+		)
+	}
+	if mode == modeProxy {
+		xff := r.Header.Get("X-Forwarded-For")
+		// Extract first IP from comma-separated list
+		ip := strings.Split(xff, ",")[0]
+		ip = strings.TrimSpace(ip)
+
 		if _, err := fmt.Fprintf(w, "%s\n", ip); err != nil {
 			slog.Error("failed to write response", "error", err)
 			return

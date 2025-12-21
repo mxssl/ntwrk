@@ -5,13 +5,13 @@ COPY . .
 
 # Install external dependcies
 RUN apk add --no-cache \
-  ca-certificates \
-  curl \
-  git
+	ca-certificates \
+	curl \
+	git
 
 # Compile binary
 RUN CGO_ENABLED=0 \
-  go build -v -o ntwrk
+	go build -v -o ntwrk
 
 # Copy compiled binary to clear Alpine Linux image
 FROM alpine:3.23.0

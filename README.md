@@ -23,20 +23,22 @@ If you want to run your own instance of the app, create a `.env` file with the f
 ```sh
 # The app starts on this port
 PORT=80
-# The mode can be set to either "native" or "cloudflare"
-# If you use "cloudflare" mode, then the app responds with the value of the HTTP header "CF-Connecting-IP"
-# https://developers.cloudflare.com/fundamentals/reference/http-request-headers/#cf-connecting-ip
+
+# The mode can be set to "native", "cloudflare", or "proxy"
+# - "native" - extracts IP from the RemoteAddr field
+# - "cloudflare" - responds with the value of the "CF-Connecting-IP" HTTP header
+#   https://developers.cloudflare.com/fundamentals/reference/http-request-headers/#cf-connecting-ip
+# - "proxy" - for using with reverse proxies (nginx, HAProxy, etc.) that set the
+#   "X-Forwarded-For" header. Returns the first IP from the header (the original client IP).
 MODE=native
 ```
 
 Create `docker-compose.yml` file:
 
 ```yaml
-version: "3"
-
 services:
   ntwrk:
-    image: mxssl/ntwrk:0.1.12
+    image: mxssl/ntwrk:0.1.13
     env_file: .env
     restart: always
     # For "native" mode, you need to use the host network mode
