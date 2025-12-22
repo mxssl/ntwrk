@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 \
 	go build -v -o ntwrk
 
 # Copy compiled binary to clear Alpine Linux image
-FROM alpine:3.23.0
+FROM alpine:3.23.2
 WORKDIR /
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/src/github.com/mxssl/ntwrk/ntwrk /ntwrk
