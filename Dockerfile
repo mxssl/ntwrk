@@ -1,4 +1,4 @@
-FROM golang:1.26-alpine3.22 as builder
+FROM golang:1.26.3-alpine3.23 as builder
 
 WORKDIR /go/src/github.com/mxssl/ntwrk
 COPY . .

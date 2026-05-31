@@ -9,7 +9,7 @@ export GO111MODULE=on
 all: lint build
 
 build:
-	go build -v -mod=vendor -o ${BINARY_NAME}
+	go build -v -o ${BINARY_NAME}
 
 clean:
 	rm -f ${BINARY_NAME}
@@ -25,11 +25,11 @@ deps-update:
 
 github-release-dry:
 	@echo "TAG: ${TAG}"
-	goreleaser release --rm-dist --snapshot --skip-publish
+	goreleaser release --clean --snapshot
 
 github-release:
 	@echo "TAG: ${TAG}"
-	goreleaser release --rm-dist
+	goreleaser release --clean
 
 docker-release:
 	@echo "Registry: ${DOCKER_REGISTRY}"
