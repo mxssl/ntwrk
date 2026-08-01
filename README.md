@@ -38,7 +38,7 @@ Create `docker-compose.yml` file:
 ```yaml
 services:
   ntwrk:
-    image: mxssl/ntwrk:0.1.14
+    image: mxssl/ntwrk:0.1.15
     env_file: .env
     restart: always
     # For "native" mode, you need to use the host network mode
