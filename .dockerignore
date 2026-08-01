@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+.env
+.env.*
+!.env.example
+
+ntwrk
+Dockerfile*
+docker-compose*.yml
+Makefile
+README*

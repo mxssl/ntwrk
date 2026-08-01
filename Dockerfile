@@ -1,22 +1,19 @@
-FROM golang:1.26.5-alpine3.23 as builder
+# syntax=docker/dockerfile:1
 
-WORKDIR /go/src/github.com/mxssl/ntwrk
+FROM golang:1.26.5-alpine3.23@sha256:622e56dbc11a8cfe87cafa2331e9a201877271cbff918af53d3be315f3da88cc AS builder
+
+WORKDIR /src
+
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux \
+	go build -trimpath -ldflags="-s -w" -o /out/ntwrk .
 
-# Install external dependcies
-RUN apk add --no-cache \
-	ca-certificates \
-	curl \
-	git
+FROM gcr.io/distroless/static-debian13:nonroot@sha256:f7f8f729987ad0fdf6b05eeeae94b26e6a0f613bdf46feea7fc40f7bd72953e6
 
-# Compile binary
-RUN CGO_ENABLED=0 \
-	go build -v -o ntwrk
+COPY --from=builder --chown=65532:65532 --chmod=0555 /out/ntwrk /ntwrk
 
-# Copy compiled binary to clear Alpine Linux image
-FROM alpine:3.24.1
-WORKDIR /
-RUN apk add --no-cache ca-certificates
-COPY --from=builder /go/src/github.com/mxssl/ntwrk/ntwrk /ntwrk
-RUN chmod +x ntwrk
-CMD ["./ntwrk"]
+USER nonroot:nonroot
+ENTRYPOINT ["/ntwrk"]
