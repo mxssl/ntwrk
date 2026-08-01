@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 	"log/slog"
@@ -56,34 +57,47 @@ func main() {
 
 	server := http.Server{Addr: port}
 
-	go func() {
-		slog.Error(
-			"server error",
-			"errorMsg", server.ListenAndServe(),
-		)
-	}()
-
 	slog.Info(
 		"app started",
 		slog.String("addr", server.Addr),
 	)
+	serverErrors := make(chan error, 1)
+	go func() {
+		serverErrors <- server.ListenAndServe()
+	}()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	defer signal.Stop(signalChan)
 
-	switch <-signalChan {
-	case syscall.SIGINT:
-		slog.Info("shutting down...")
-		if err := server.Shutdown(context.Background()); err != nil {
-			slog.Error(
-				"cannot gracefully shutdown the app",
-				"errorMsg", err,
-			)
+	select {
+	case err := <-serverErrors:
+		if err != nil && err != http.ErrServerClosed {
+			slog.Error("server error", "errorMsg", err)
 		}
-	case syscall.SIGTERM:
-		slog.Info("killed")
 		return
+	case sig := <-signalChan:
+		slog.Info("shutting down...", "signal", sig)
 	}
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		slog.Error(
+			"cannot gracefully shutdown the app",
+			"errorMsg", err,
+		)
+		if err := server.Close(); err != nil {
+			slog.Error("cannot force the server to close", "errorMsg", err)
+		}
+	}
+
+	if err := <-serverErrors; err != nil && err != http.ErrServerClosed {
+		slog.Error("server error during shutdown", "errorMsg", err)
+	}
+
+	slog.Info("app stopped")
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
